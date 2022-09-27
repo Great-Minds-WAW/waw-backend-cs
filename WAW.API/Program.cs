@@ -113,20 +113,18 @@ try {
   app.UseSerilogRequestLogging();
 
   // Configure the HTTP request pipeline.
-  if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-  } else {
-    // Trust the reverse proxy
-    app.UseForwardedHeaders();
 
-    if (!app.Environment.IsEnvironment("Testing")) {
-      // Apply any migrations needed automatically
-      var scope = app.Services.CreateScope();
-      var context = scope.ServiceProvider.GetService<AppDbContext>();
-      context?.Database.Migrate();
-    }
+  // Trust the reverse proxy
+  app.UseForwardedHeaders();
+  app.UseSwagger();
+  app.UseSwaggerUI();
+  if (!app.Environment.IsEnvironment("Testing")) {
+    // Apply any migrations needed automatically
+    var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetService<AppDbContext>();
+    context?.Database.Migrate();
   }
+
 
   app.UseCors();
 
